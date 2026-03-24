@@ -27,6 +27,7 @@ body {
   background:
     radial-gradient(circle at top, rgba(103, 232, 249, 0.12), transparent 30%),
     linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+  touch-action: manipulation;
 }
 
 body::before,
@@ -126,6 +127,49 @@ canvas {
   border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.09);
   background: linear-gradient(180deg, #0b1730 0%, #07101f 48%, #03060d 100%);
+  touch-action: none;
+}
+
+.mobile-controls {
+  position: absolute;
+  inset: auto 18px 18px;
+  display: none;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  pointer-events: none;
+}
+
+.control-pad {
+  display: flex;
+  gap: 12px;
+}
+
+.control-button {
+  min-width: 74px;
+  min-height: 74px;
+  margin-top: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(4, 14, 26, 0.78);
+  color: var(--ink);
+  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(16px);
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.control-button--fire {
+  min-width: 108px;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.95), rgba(251, 113, 133, 0.95));
+  color: #180602;
+ }
+
+.control-button:active,
+.control-button.is-active {
+  transform: scale(0.96);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.28);
 }
 
 .overlay {
@@ -186,6 +230,7 @@ button:active {
   .game-shell {
     padding: 20px;
     width: min(100vw - 16px, 1120px);
+    border-radius: 24px;
   }
 
   .hud {
@@ -200,5 +245,65 @@ button:active {
 
   .stat-card {
     flex: 1 1 110px;
+  }
+
+  .overlay__panel {
+    padding: 24px 20px;
+  }
+}
+
+@media (max-width: 720px) {
+  body {
+    place-items: stretch;
+  }
+
+  .game-shell {
+    width: 100%;
+    min-height: 100vh;
+    padding: 16px;
+    border-radius: 0;
+    border: 0;
+  }
+
+  canvas,
+  .overlay {
+    border-radius: 20px;
+  }
+
+  .mobile-controls {
+    display: flex;
+  }
+}
+
+@media (max-width: 540px) {
+  .hud h1 {
+    font-size: 1.6rem;
+  }
+
+  .hud__stats {
+    gap: 10px;
+  }
+
+  .stat-card {
+    min-width: 96px;
+    padding: 10px 12px;
+  }
+
+  .stat-card strong {
+    font-size: 1.2rem;
+  }
+
+  .mobile-controls {
+    inset: auto 12px 12px;
+  }
+
+  .control-button {
+    min-width: 64px;
+    min-height: 64px;
+    font-size: 0.95rem;
+  }
+
+  .control-button--fire {
+    min-width: 96px;
   }
 }

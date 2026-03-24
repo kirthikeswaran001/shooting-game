@@ -8,8 +8,18 @@ const overlay = document.getElementById("overlay");
 const overlayTitle = document.getElementById("overlayTitle");
 const overlayText = document.getElementById("overlayText");
 const startButton = document.getElementById("startButton");
+const controlButtons = document.querySelectorAll("[data-control]");
+const controlMap = Object.fromEntries(
+  Array.from(controlButtons, (button) => [button.dataset.control, button])
+);
 
 const keys = new Set();
+const touchInput = {
+  left: false,
+  right: false,
+  fire: false,
+  pointerId: null,
+};
 
 const state = {
   running: false,
@@ -29,6 +39,11 @@ const state = {
 };
 
 function resetGame() {
+  touchInput.left = false;
+  touchInput.right = false;
+  touchInput.fire = false;
+  touchInput.pointerId = null;
+  Object.values(controlMap).forEach((button) => button.classList.remove("is-active"));
   state.running = false;
   state.score = 0;
   state.lives = 3;
@@ -154,9 +169,9 @@ function update(delta) {
     return;
   }
 
-  const left = keys.has("ArrowLeft") || keys.has("a") || keys.has("A");
-  const right = keys.has("ArrowRight") || keys.has("d") || keys.has("D");
-  const fire = keys.has(" ") || keys.has("Space") || keys.has("Spacebar");
+  const left = touchInput.left || keys.has("ArrowLeft") || keys.has("a") || keys.has("A");
+  const right = touchInput.right || keys.has("ArrowRight") || keys.has("d") || keys.has("D");
+  const fire = touchInput.fire || keys.has(" ") || keys.has("Space") || keys.has("Spacebar");
 
   if (left) {
     ship.x -= ship.speed * delta;
@@ -408,9 +423,68 @@ function loop(timestamp) {
   }
 }
 
+function setControlState(control, pressed) {
+  if (!(control in touchInput)) {
+    return;
+  }
+
+  touchInput[control] = pressed;
+  const button = controlMap[control];
+  if (button) {
+    button.classList.toggle("is-active", pressed);
+  }
+}
+
+function releaseTouchMovement(pointerId = null) {
+  if (pointerId === null || touchInput.pointerId === pointerId) {
+    touchInput.pointerId = null;
+    touchInput.left = false;
+    touchInput.right = false;
+  }
+}
+
+function moveShipToClientX(clientX) {
+  if (!state.ship) {
+    return;
+  }
+
+  const rect = canvas.getBoundingClientRect();
+  const relativeX = (clientX - rect.left) / rect.width;
+  const targetX = relativeX * canvas.width - state.ship.width / 2;
+  state.ship.x = Math.max(20, Math.min(canvas.width - state.ship.width - 20, targetX));
+}
+
+function handleCanvasPointerDown(event) {
+  if (overlay.hidden === false) {
+    return;
+  }
+
+  touchInput.pointerId = event.pointerId;
+  moveShipToClientX(event.clientX);
+  touchInput.fire = true;
+  canvas.setPointerCapture?.(event.pointerId);
+  event.preventDefault();
+}
+
+function handleCanvasPointerMove(event) {
+  if (touchInput.pointerId !== event.pointerId) {
+    return;
+  }
+
+  moveShipToClientX(event.clientX);
+  event.preventDefault();
+}
+
+function handleCanvasPointerUp(event) {
+  if (touchInput.pointerId === event.pointerId) {
+    releaseTouchMovement(event.pointerId);
+    touchInput.fire = false;
+  }
+}
+
 window.addEventListener("keydown", (event) => {
   keys.add(event.key);
-  if (["ArrowLeft", "ArrowRight", " ", "Spacebar"].includes(event.key)) {
+  if (["ArrowLeft", "ArrowRight", " ", "Space", "Spacebar"].includes(event.key)) {
     event.preventDefault();
   }
 });
@@ -418,6 +492,37 @@ window.addEventListener("keydown", (event) => {
 window.addEventListener("keyup", (event) => {
   keys.delete(event.key);
 });
+
+window.addEventListener("pointerup", () => {
+  touchInput.fire = false;
+});
+
+window.addEventListener("pointercancel", () => {
+  touchInput.fire = false;
+  releaseTouchMovement();
+});
+
+controlButtons.forEach((button) => {
+  const control = button.dataset.control;
+
+  button.addEventListener("pointerdown", (event) => {
+    setControlState(control, true);
+    event.preventDefault();
+  });
+
+  button.addEventListener("pointerup", () => setControlState(control, false));
+  button.addEventListener("pointercancel", () => setControlState(control, false));
+  button.addEventListener("pointerleave", (event) => {
+    if (event.buttons === 0) {
+      setControlState(control, false);
+    }
+  });
+});
+
+canvas.addEventListener("pointerdown", handleCanvasPointerDown);
+canvas.addEventListener("pointermove", handleCanvasPointerMove);
+canvas.addEventListener("pointerup", handleCanvasPointerUp);
+canvas.addEventListener("pointercancel", handleCanvasPointerUp);
 
 startButton.addEventListener("click", startGame);
 

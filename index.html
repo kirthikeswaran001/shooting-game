@@ -34,12 +34,19 @@
 
     <section class="play-area">
       <canvas id="gameCanvas" width="960" height="540" aria-label="Shooting game"></canvas>
+      <div class="mobile-controls" aria-label="Touch controls">
+        <div class="control-pad" role="group" aria-label="Movement controls">
+          <button class="control-button" data-control="left" aria-label="Move left" type="button">◀</button>
+          <button class="control-button" data-control="right" aria-label="Move right" type="button">▶</button>
+        </div>
+        <button class="control-button control-button--fire" data-control="fire" aria-label="Fire weapon" type="button">FIRE</button>
+      </div>
       <div class="overlay" id="overlay">
         <div class="overlay__panel">
           <p class="eyebrow">Controls</p>
           <h2 id="overlayTitle">Defend the skyline</h2>
           <p id="overlayText">
-            Move with A/D or arrow keys, fire with Space, and survive as long as you can.
+            Move with A/D or arrow keys, fire with Space, or use the touch controls on mobile to survive as long as you can.
           </p>
           <button id="startButton" type="button">Start Game</button>
         </div>
