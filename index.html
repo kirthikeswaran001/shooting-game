@@ -10,50 +10,217 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main class="game-shell">
-    <section class="hud">
-      <div class="hud__brand">
-        <p class="eyebrow">Arcade Survival</p>
+  <main class="app-shell">
+    <section class="screen screen--active" id="loginScreen">
+      <div class="panel panel--auth">
+        <p class="eyebrow">Player Login</p>
         <h1>Skyline Shooter</h1>
-      </div>
-      <div class="hud__stats">
-        <div class="stat-card">
-          <span class="stat-card__label">Score</span>
-          <strong id="score">0</strong>
-        </div>
-        <div class="stat-card">
-          <span class="stat-card__label">Lives</span>
-          <strong id="lives">3</strong>
-        </div>
-        <div class="stat-card">
-          <span class="stat-card__label">Level</span>
-          <strong id="level">1</strong>
-        </div>
+        <p class="lead">Every player gets a unique player ID. Use that ID to add real friends after you host the game.</p>
+        <form class="auth-form" id="loginForm">
+          <label class="field">
+            <span>Player ID</span>
+            <input id="loginPlayerId" type="text" maxlength="18" placeholder="kirthik01" required>
+          </label>
+          <label class="field">
+            <span>Display Name</span>
+            <input id="loginDisplayName" type="text" maxlength="16" placeholder="Kirthik" required>
+          </label>
+          <button type="submit" id="loginButton">Continue</button>
+        </form>
+        <p class="helper-text" id="loginStatus">Offline mode works now. Hosted sync starts when Firebase config is added.</p>
       </div>
     </section>
 
-    <section class="play-area">
-      <canvas id="gameCanvas" width="960" height="540" aria-label="Shooting game"></canvas>
-      <div class="mobile-controls" aria-label="Touch controls">
-        <div class="control-pad" role="group" aria-label="Movement controls">
-          <button class="control-button" data-control="left" aria-label="Move left" type="button">◀</button>
-          <button class="control-button" data-control="right" aria-label="Move right" type="button">▶</button>
+    <section class="screen" id="homeScreen">
+      <div class="panel hero-panel">
+        <div class="hero-panel__copy">
+          <p class="eyebrow">Main Menu</p>
+          <h1>Skyline Shooter</h1>
+          <p class="lead">Choose a page like a mobile arcade game: start, costumes, leaderboard, or level guide.</p>
         </div>
-        <button class="control-button control-button--fire" data-control="fire" aria-label="Fire weapon" type="button">FIRE</button>
-      </div>
-      <div class="overlay" id="overlay">
-        <div class="overlay__panel">
-          <p class="eyebrow">Controls</p>
-          <h2 id="overlayTitle">Defend the skyline</h2>
-          <p id="overlayText">
-            Move with A/D or arrow keys, fire with Space, or use the touch controls on mobile to survive as long as you can.
-          </p>
-          <button id="startButton" type="button">Start Game</button>
+        <div class="profile-card">
+          <span class="profile-card__label">Signed in as</span>
+          <strong id="profileName">Pilot</strong>
+          <span id="profileId">pilot-id</span>
         </div>
       </div>
+
+      <section class="panel">
+        <p class="eyebrow">Profile</p>
+        <h2>Edit Player</h2>
+        <form class="auth-form" id="profileForm">
+          <label class="field">
+            <span>Edit Player ID</span>
+            <input id="editPlayerId" type="text" maxlength="18" placeholder="player-id">
+          </label>
+          <label class="field">
+            <span>Edit Display Name</span>
+            <input id="editDisplayName" type="text" maxlength="16" placeholder="Display name">
+          </label>
+          <button type="submit">Save Profile</button>
+        </form>
+        <p class="helper-text" id="profileStatus">Update your player name or ID here.</p>
+      </section>
+
+      <nav class="menu-grid">
+        <button class="menu-card menu-card--start" data-go="game" type="button">
+          <span class="menu-card__eyebrow">Play</span>
+          <strong>Start Game</strong>
+          <span>Jump straight into the next run.</span>
+        </button>
+        <button class="menu-card" data-go="leaderboard" type="button">
+          <span class="menu-card__eyebrow">Board</span>
+          <strong>Scoreboard</strong>
+          <span>See only you and the friends you added.</span>
+        </button>
+        <button class="menu-card" data-go="costumes" type="button">
+          <span class="menu-card__eyebrow">Style</span>
+          <strong>Costumes</strong>
+          <span>Change the main spaceship appearance.</span>
+        </button>
+        <button class="menu-card" data-go="levels" type="button">
+          <span class="menu-card__eyebrow">Guide</span>
+          <strong>Level Guide</strong>
+          <span>See boss health and wave flow like a stage map.</span>
+        </button>
+      </nav>
+    </section>
+
+    <section class="screen" id="costumesScreen">
+      <header class="screen-header">
+        <button class="ghost-button" data-go="home" type="button">Back</button>
+        <div>
+          <p class="eyebrow">Ship Bay</p>
+          <h2>Costumes</h2>
+        </div>
+      </header>
+      <section class="panel">
+        <p class="lead">Pick your ship before starting a run.</p>
+        <div class="costume-grid" id="costumeGrid">
+          <button class="costume-card is-selected" data-costume="classic" type="button">
+            <strong>Classic</strong>
+            <span>Bright cyan interceptor.</span>
+          </button>
+          <button class="costume-card" data-costume="stealth" type="button">
+            <strong>Stealth</strong>
+            <span>Silver shadow glider.</span>
+          </button>
+          <button class="costume-card" data-costume="nova" type="button">
+            <strong>Nova</strong>
+            <span>Warm gold striker.</span>
+          </button>
+          <button class="costume-card" data-costume="leaf" type="button">
+            <strong>Leaf</strong>
+            <span>Green pulse flyer.</span>
+          </button>
+        </div>
+      </section>
+    </section>
+
+    <section class="screen" id="levelsScreen">
+      <header class="screen-header">
+        <button class="ghost-button" data-go="home" type="button">Back</button>
+        <div>
+          <p class="eyebrow">Level Map</p>
+          <h2>Boss Guide</h2>
+        </div>
+      </header>
+      <section class="panel">
+        <p class="lead">Every 5th level is a boss fight. Boss health follows `level + 5`.</p>
+        <div class="level-guide" id="levelGuide"></div>
+      </section>
+    </section>
+
+    <section class="screen" id="leaderboardScreen">
+      <header class="screen-header">
+        <button class="ghost-button" data-go="home" type="button">Back</button>
+        <div>
+          <p class="eyebrow">Friends Board</p>
+          <h2>Scoreboard</h2>
+        </div>
+      </header>
+      <section class="panel board-layout">
+        <div class="friends-panel">
+          <h3>Friends</h3>
+          <form id="friendForm" class="friend-form">
+            <label class="field">
+              <span>Add friend by Player ID</span>
+              <input id="friendIdInput" type="text" maxlength="18" placeholder="friend-id">
+            </label>
+            <button type="submit">Add Friend</button>
+          </form>
+          <ul class="friend-list" id="friendList"></ul>
+          <p class="helper-text" id="friendStatus">Add only real player IDs. No fake players are used here.</p>
+        </div>
+        <div class="scores-panel">
+          <div class="scoreboard-header">
+            <div>
+              <h3>Scoreboards</h3>
+              <p class="helper-text">Friends shows only your circle. World shows every registered player.</p>
+            </div>
+          </div>
+          <div class="scoreboard-switch">
+            <button class="ghost-button scoreboard-tab is-selected" data-board-view="friends" type="button">Friends</button>
+            <button class="ghost-button scoreboard-tab" data-board-view="world" type="button">World</button>
+          </div>
+          <ol class="score-list" id="friendsScoreList"></ol>
+          <ol class="score-list" id="worldScoreList" hidden></ol>
+        </div>
+      </section>
+    </section>
+
+    <section class="screen" id="gameScreen">
+      <header class="game-header">
+        <button class="ghost-button" data-go="home" id="leaveGameButton" type="button">Menu</button>
+        <div class="hud">
+          <div class="hud-card">
+            <span>Score</span>
+            <strong id="score">0</strong>
+          </div>
+          <div class="hud-card">
+            <span>Lives</span>
+            <strong id="lives">3</strong>
+          </div>
+          <div class="hud-card">
+            <span>Level</span>
+            <strong id="level">1</strong>
+          </div>
+          <div class="hud-card hud-card--boss">
+            <span>Boss HP</span>
+            <strong id="bossHealth">-</strong>
+          </div>
+        </div>
+        <button class="ghost-button" id="pauseButton" type="button">Pause</button>
+      </header>
+
+      <section class="game-panel">
+        <div class="game-mode" id="modeText">Endless wave</div>
+        <canvas id="gameCanvas" width="720" height="960" aria-label="Shooting game"></canvas>
+        <div class="mobile-controls" aria-label="Touch controls">
+          <div class="control-pad" role="group" aria-label="Movement controls">
+            <button class="control-button" data-control="left" aria-label="Move left" type="button">LEFT</button>
+            <button class="control-button" data-control="right" aria-label="Move right" type="button">RIGHT</button>
+          </div>
+          <button class="control-button control-button--fire" data-control="fire" aria-label="Fire weapon" type="button">FIRE</button>
+        </div>
+        <div class="overlay" id="overlay" hidden>
+          <div class="overlay__panel">
+            <p class="eyebrow" id="overlayEyebrow">Wait</p>
+            <h2 id="overlayTitle">Paused</h2>
+            <p id="overlayText">Press pause again to continue.</p>
+            <div class="overlay__actions">
+              <button id="startButton" type="button">Resume</button>
+            </div>
+          </div>
+        </div>
+      </section>
     </section>
   </main>
 
-  <script src="game.js"></script>
+  <script src="firebase-config.js"></script>
+  <script>
+    window.SKYLINE_FIREBASE_CONFIG = window.SKYLINE_FIREBASE_CONFIG || null;
+  </script>
+  <script type="module" src="game.js"></script>
 </body>
 </html>
