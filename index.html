@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skyline Shooter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="game-shell">
+    <section class="hud">
+      <div class="hud__brand">
+        <p class="eyebrow">Arcade Survival</p>
+        <h1>Skyline Shooter</h1>
+      </div>
+      <div class="hud__stats">
+        <div class="stat-card">
+          <span class="stat-card__label">Score</span>
+          <strong id="score">0</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__label">Lives</span>
+          <strong id="lives">3</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__label">Level</span>
+          <strong id="level">1</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="play-area">
+      <canvas id="gameCanvas" width="960" height="540" aria-label="Shooting game"></canvas>
+      <div class="overlay" id="overlay">
+        <div class="overlay__panel">
+          <p class="eyebrow">Controls</p>
+          <h2 id="overlayTitle">Defend the skyline</h2>
+          <p id="overlayText">
+            Move with A/D or arrow keys, fire with Space, and survive as long as you can.
+          </p>
+          <button id="startButton" type="button">Start Game</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
